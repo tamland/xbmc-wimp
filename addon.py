@@ -95,9 +95,16 @@ def urls_from_id(view_func, items):
 def root():
     add_directory('My music', my_music)
     add_directory('Search', search)
+    add_directory('Featured Playlists', promotions)
     add_directory('Login', login)
     add_directory('Logout', logout)
     xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/promotions')
+def promotions():
+    items = wimp.get_featured()
+    view(items, urls_from_id(playlist_view, items))
 
 
 @plugin.route('/my_music')

@@ -77,6 +77,9 @@ def track_list(tracks):
             'album': track.album.name})
         if track.album:
             li.setThumbnailImage(track.album.image)
+        radio_url = plugin.url_for(track_radio, track_id=track.id)
+        li.addContextMenuItems(
+            [('Track Radio', 'XBMC.Container.Update(%s)' % radio_url,)])
         list_items.append((url, li, False))
     xbmcplugin.addDirectoryItems(plugin.handle, list_items)
     xbmcplugin.endOfDirectory(plugin.handle)
@@ -102,6 +105,11 @@ def root():
     add_directory('Login', login)
     add_directory('Logout', logout)
     xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/track_radio/<track_id>')
+def track_radio(track_id):
+    track_list(wimp.get_track_radio(track_id))
 
 
 @plugin.route('/moods/<mood>')

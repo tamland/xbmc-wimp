@@ -82,9 +82,9 @@ def track_list(tracks):
     xbmcplugin.endOfDirectory(plugin.handle)
 
 
-def add_directory(title, view_func):
+def add_directory(title, view_func, **kwargs):
     xbmcplugin.addDirectoryItem(
-        plugin.handle, plugin.url_for(view_func), ListItem(title), True)
+        plugin.handle, plugin.url_for(view_func, **kwargs), ListItem(title), True)
 
 
 def urls_from_id(view_func, items):
@@ -96,6 +96,7 @@ def root():
     add_directory('My music', my_music)
     add_directory('Search', search)
     add_directory('Featured Playlists', promotions)
+    add_directory("What's New", whats_new)
     add_directory('Login', login)
     add_directory('Logout', logout)
     xbmcplugin.endOfDirectory(plugin.handle)
@@ -105,6 +106,38 @@ def root():
 def promotions():
     items = wimp.get_featured()
     view(items, urls_from_id(playlist_view, items))
+
+
+@plugin.route('/featured/tracks/<_type>')
+def featured_tracks(_type):
+    items = wimp.get_recommended_new_top('tracks', _type)
+    track_list(items)
+
+
+@plugin.route('/featured/playlists/<_type>')
+def featured_playlists(_type):
+    items = wimp.get_recommended_new_top('playlists', _type)
+    view(items, urls_from_id(playlist_view, items))
+
+
+@plugin.route('/featured/albums/<_type>')
+def featured_albums(_type):
+    items = wimp.get_recommended_new_top('albums', _type)
+    view(items, urls_from_id(album_view, items))
+
+
+@plugin.route('/whats_new')
+def whats_new():
+    add_directory('New Playlists', featured_playlists, _type='new')
+    add_directory(
+        'Recommended Playlists', featured_playlists, _type='recommended')
+    add_directory('New Albums', featured_albums, _type='new')
+    add_directory('Top Albums', featured_albums, _type='top')
+    add_directory('Recommended Albums', featured_albums, _type='recommended')
+    add_directory('New Tracks', featured_tracks, _type='new')
+    add_directory('Top Tracks', featured_tracks, _type='top')
+    add_directory('Recommended Tracks', featured_tracks, _type='recommended')
+    xbmcplugin.endOfDirectory(plugin.handle)
 
 
 @plugin.route('/my_music')

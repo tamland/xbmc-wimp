@@ -97,8 +97,23 @@ def root():
     add_directory('Search', search)
     add_directory('Featured Playlists', promotions)
     add_directory("What's New", whats_new)
+    add_directory('Moods', moods)
     add_directory('Login', login)
     add_directory('Logout', logout)
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/moods/<mood>')
+def moods_playlists(mood):
+    items = wimp.get_mood_playlists(mood)
+    view(items, urls_from_id(playlist_view, items))
+
+
+@plugin.route('/moods')
+def moods():
+    items = wimp.get_moods()
+    for mood in items:
+        add_directory(mood['name'], moods_playlists, mood=mood['path'])
     xbmcplugin.endOfDirectory(plugin.handle)
 
 

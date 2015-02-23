@@ -17,7 +17,10 @@
 
 from __future__ import unicode_literals
 
-import xbmc, xbmcgui, xbmcaddon, xbmcplugin
+import xbmc
+import xbmcgui
+import xbmcaddon
+import xbmcplugin
 from xbmcgui import ListItem
 from lib import wimpy
 from lib.wimpy.models import Album, Artist
@@ -32,9 +35,12 @@ config = wimpy.Config(
     country_code=addon.getSetting('country_code'),
     user_id=addon.getSetting('user_id'),
     api=wimpy.TIDAL_API if addon.getSetting('site') == '1' else wimpy.WIMP_API,
-    quality=[Quality.lossless, Quality.high, Quality.low][int('0'+addon.getSetting('quality'))],
+    quality=[Quality.lossless, Quality.high, Quality.low][
+        int('0' + addon.getSetting('quality'))],
 )
 wimp = wimpy.Session(config)
+mimetype = ['audio/mpeg', 'audio/mpeg',
+            'audio/flac'][int('0' + addon.getSetting('quality'))]
 
 
 def view(data_items, urls, end=True):
@@ -71,14 +77,17 @@ def track_list(tracks):
             'album': track.album.name})
         if track.album:
             li.setThumbnailImage(track.album.image)
+        radio_url = plugin.url_for(track_radio, track_id=track.id)
+        li.addContextMenuItems(
+            [('Track Radio', 'XBMC.Container.Update(%s)' % radio_url,)])
         list_items.append((url, li, False))
     xbmcplugin.addDirectoryItems(plugin.handle, list_items)
     xbmcplugin.endOfDirectory(plugin.handle)
 
 
-def add_directory(title, view_func):
+def add_directory(title, view_func, **kwargs):
     xbmcplugin.addDirectoryItem(
-        plugin.handle, plugin.url_for(view_func), ListItem(title), True)
+        plugin.handle, plugin.url_for(view_func, **kwargs), ListItem(title), True)
 
 
 def urls_from_id(view_func, items):
@@ -89,8 +98,103 @@ def urls_from_id(view_func, items):
 def root():
     add_directory('My music', my_music)
     add_directory('Search', search)
+    add_directory('Featured Playlists', promotions)
+    add_directory("What's New", whats_new)
+    add_directory('Genres', genres)
+    add_directory('Moods', moods)
     add_directory('Login', login)
     add_directory('Logout', logout)
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/track_radio/<track_id>')
+def track_radio(track_id):
+    track_list(wimp.get_track_radio(track_id))
+
+
+@plugin.route('/moods/<mood>')
+def moods_playlists(mood):
+    items = wimp.get_mood_playlists(mood)
+    view(items, urls_from_id(playlist_view, items))
+
+
+@plugin.route('/moods')
+def moods():
+    items = wimp.get_moods()
+    for mood in items:
+        add_directory(mood['name'], moods_playlists, mood=mood['path'])
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/genres')
+def genres():
+    items = wimp.get_genres()
+    for item in items:
+        add_directory(item['name'], genre, _genre=item['path'])
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/genre/<_genre>')
+def genre(_genre):
+    add_directory('Playlists', genre_playlists, _genre=_genre)
+    add_directory('Albums', genre_albums, _genre=_genre)
+    add_directory('Tracks', genre_tracks, _genre=_genre)
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/genre/<_genre>/playlists')
+def genre_playlists(_genre):
+    items = wimp.get_genre_items(_genre, 'playlists')
+    view(items, urls_from_id(playlist_view, items))
+
+
+@plugin.route('/genre/<_genre>/albums')
+def genre_albums(_genre):
+    items = wimp.get_genre_items(_genre, 'albums')
+    view(items, urls_from_id(album_view, items))
+
+
+@plugin.route('/genre/<_genre>/tracks')
+def genre_tracks(_genre):
+    items = wimp.get_genre_items(_genre, 'tracks')
+    track_list(items)
+
+
+@plugin.route('/promotions')
+def promotions():
+    items = wimp.get_featured()
+    view(items, urls_from_id(playlist_view, items))
+
+
+@plugin.route('/featured/tracks/<_type>')
+def featured_tracks(_type):
+    items = wimp.get_recommended_new_top('tracks', _type)
+    track_list(items)
+
+
+@plugin.route('/featured/playlists/<_type>')
+def featured_playlists(_type):
+    items = wimp.get_recommended_new_top('playlists', _type)
+    view(items, urls_from_id(playlist_view, items))
+
+
+@plugin.route('/featured/albums/<_type>')
+def featured_albums(_type):
+    items = wimp.get_recommended_new_top('albums', _type)
+    view(items, urls_from_id(album_view, items))
+
+
+@plugin.route('/whats_new')
+def whats_new():
+    add_directory('New Playlists', featured_playlists, _type='new')
+    add_directory(
+        'Recommended Playlists', featured_playlists, _type='recommended')
+    add_directory('New Albums', featured_albums, _type='new')
+    add_directory('Top Albums', featured_albums, _type='top')
+    add_directory('Recommended Albums', featured_albums, _type='recommended')
+    add_directory('New Tracks', featured_tracks, _type='new')
+    add_directory('Top Tracks', featured_tracks, _type='top')
+    add_directory('Recommended Tracks', featured_tracks, _type='recommended')
     xbmcplugin.endOfDirectory(plugin.handle)
 
 
@@ -131,8 +235,8 @@ def artist_view(artist_id):
         ListItem('Similar Artists'), True
     )
     albums = wimp.get_artist_albums(artist_id) + \
-             wimp.get_artist_albums_ep_singles(artist_id) + \
-             wimp.get_artist_albums_other(artist_id)
+        wimp.get_artist_albums_ep_singles(artist_id) + \
+        wimp.get_artist_albums_other(artist_id)
     view(albums, urls_from_id(album_view, albums))
 
 
@@ -200,9 +304,11 @@ def search():
         query = dialog.input('Search')
         if query:
             res = wimp.search(field, query)
-            view(res.artists, urls_from_id(artist_view, res.artists), end=False)
+            view(res.artists, urls_from_id(
+                artist_view, res.artists), end=False)
             view(res.albums, urls_from_id(album_view, res.albums), end=False)
-            view(res.playlists, urls_from_id(playlist_view, res.playlists), end=False)
+            view(res.playlists, urls_from_id(
+                playlist_view, res.playlists), end=False)
             track_list(res.tracks)
 
 
@@ -231,9 +337,13 @@ def logout():
 @plugin.route('/play/<track_id>')
 def play(track_id):
     media_url = wimp.get_media_url(track_id)
-    host, app, playpath = media_url.split('/', 3)
-    rtmp_url = 'rtmp://%s app=%s playpath=%s' % (host, app, playpath)
+    if media_url.startswith('http://') or media_url.startswith('https://'):
+        rtmp_url = media_url
+    else:
+        host, app, playpath = media_url.split('/', 3)
+        rtmp_url = 'rtmp://%s app=%s playpath=%s' % (host, app, playpath)
     li = ListItem(path=rtmp_url)
+    li.setProperty('mimetype', mimetype)
     xbmcplugin.setResolvedUrl(plugin.handle, True, li)
 
 

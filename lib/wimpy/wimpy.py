@@ -30,12 +30,12 @@ Api = namedtuple('API', ['location', 'token'])
 WIMP_API = Api(
     location='https://play.wimpmusic.com/v1/',
     token='rQtt0XAsYjXYIlml',
-    )
+)
 
 TIDAL_API = Api(
     location='https://listen.tidalhifi.com/v1/',
     token='P5Xbeo5LFvESeDy6',
-    )
+)
 
 
 class Quality(object):
@@ -84,7 +84,8 @@ class Session(object):
         """ Returns true if current session is valid, false otherwise. """
         if self.user is None or not self.user.id or not self.session_id:
             return False
-        url = urljoin(self.api_location, 'users/%s/subscription' % self.user.id)
+        url = urljoin(self.api_location, 'users/%s/subscription' %
+                      self.user.id)
         return requests.get(url, params={'sessionId': self.session_id}).ok
 
     def request(self, method, path, params=None, data=None):
@@ -147,7 +148,28 @@ class Session(object):
     def get_artist_radio(self, artist_id):
         return self._map_request('artists/%s/radio' % artist_id, params={'limit': 100}, ret='tracks')
 
-    def _map_request(self, url, params=None, ret=None):
+    def get_featured(self):
+        return self._map_request('promotions', ret='featured_playlist', _filter=lambda x: x['type'] == 'PLAYLIST')
+
+    def get_recommended_new_top(self, what, _type):
+        return self._map_request('/'.join(['featured', _type, what]), ret=what)
+
+    def get_moods(self):
+        return self.request('GET', 'moods', None).json()
+
+    def get_mood_playlists(self, mood):
+        return self._map_request('/'.join(['moods', mood, 'playlists']), ret='playlists')
+
+    def get_genres(self):
+        return self.request('GET', 'genres', None).json()
+
+    def get_genre_items(self, genre, _type):
+        return self._map_request('/'.join(['genres', genre, _type]), ret=_type)
+
+    def get_track_radio(self, track_id):
+        return self._map_request('tracks/%s/radio' % track_id, ret='tracks')
+
+    def _map_request(self, url, params=None, ret=None, _filter=None):
         json_obj = self.request('GET', url, params).json()
         parse = None
         if ret.startswith('artist'):
@@ -160,8 +182,13 @@ class Session(object):
             raise NotImplementedError()
         elif ret.startswith('playlist'):
             parse = _parse_playlist
+        elif ret.startswith('featured_playlist'):
+            parse = _parse_featured_playlist
 
         items = json_obj.get('items')
+        if _filter is not None and items is not None:
+            items = filter(_filter, items)
+
         if items is None:
             return parse(json_obj)
         elif len(items) > 0 and 'item' in items[0]:
@@ -205,6 +232,15 @@ def _parse_album(json_obj, artist=None):
     return Album(**kwargs)
 
 
+def _parse_featured_playlist(json_obj):
+    kwargs = {
+        'id': json_obj['artifactId'],
+        'name': json_obj['header'],
+        'description': json_obj['text'],
+    }
+    return Playlist(**kwargs)
+
+
 def _parse_playlist(json_obj):
     kwargs = {
         'id': json_obj['uuid'],
@@ -213,7 +249,7 @@ def _parse_playlist(json_obj):
         'num_tracks': int(json_obj['numberOfTracks']),
         'duration': int(json_obj['duration']),
         'is_public': json_obj['publicPlaylist'],
-        #TODO 'creator': _parse_user(json_obj['creator']),
+        # TODO 'creator': _parse_user(json_obj['creator']),
     }
     return Playlist(**kwargs)
 

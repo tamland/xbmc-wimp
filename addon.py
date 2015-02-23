@@ -39,6 +39,8 @@ config = wimpy.Config(
         int('0' + addon.getSetting('quality'))],
 )
 wimp = wimpy.Session(config)
+mimetype = ['audio/mpeg', 'audio/mpeg',
+            'audio/flac'][int('0' + addon.getSetting('quality'))]
 
 
 def view(data_items, urls, end=True):
@@ -237,9 +239,13 @@ def logout():
 @plugin.route('/play/<track_id>')
 def play(track_id):
     media_url = wimp.get_media_url(track_id)
-    host, app, playpath = media_url.split('/', 3)
-    rtmp_url = 'rtmp://%s app=%s playpath=%s' % (host, app, playpath)
+    if media_url.startswith('http://') or media_url.startswith('https://'):
+        rtmp_url = media_url
+    else:
+        host, app, playpath = media_url.split('/', 3)
+        rtmp_url = 'rtmp://%s app=%s playpath=%s' % (host, app, playpath)
     li = ListItem(path=rtmp_url)
+    li.setProperty('mimetype', mimetype)
     xbmcplugin.setResolvedUrl(plugin.handle, True, li)
 
 

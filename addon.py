@@ -97,6 +97,7 @@ def root():
     add_directory('Search', search)
     add_directory('Featured Playlists', promotions)
     add_directory("What's New", whats_new)
+    add_directory('Genres', genres)
     add_directory('Moods', moods)
     add_directory('Login', login)
     add_directory('Logout', logout)
@@ -115,6 +116,40 @@ def moods():
     for mood in items:
         add_directory(mood['name'], moods_playlists, mood=mood['path'])
     xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/genres')
+def genres():
+    items = wimp.get_genres()
+    for item in items:
+        add_directory(item['name'], genre, _genre=item['path'])
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/genre/<_genre>')
+def genre(_genre):
+    add_directory('Playlists', genre_playlists, _genre=_genre)
+    add_directory('Albums', genre_albums, _genre=_genre)
+    add_directory('Tracks', genre_tracks, _genre=_genre)
+    xbmcplugin.endOfDirectory(plugin.handle)
+
+
+@plugin.route('/genre/<_genre>/playlists')
+def genre_playlists(_genre):
+    items = wimp.get_genre_items(_genre, 'playlists')
+    view(items, urls_from_id(playlist_view, items))
+
+
+@plugin.route('/genre/<_genre>/albums')
+def genre_albums(_genre):
+    items = wimp.get_genre_items(_genre, 'albums')
+    view(items, urls_from_id(album_view, items))
+
+
+@plugin.route('/genre/<_genre>/tracks')
+def genre_tracks(_genre):
+    items = wimp.get_genre_items(_genre, 'tracks')
+    track_list(items)
 
 
 @plugin.route('/promotions')

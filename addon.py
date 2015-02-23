@@ -17,7 +17,10 @@
 
 from __future__ import unicode_literals
 
-import xbmc, xbmcgui, xbmcaddon, xbmcplugin
+import xbmc
+import xbmcgui
+import xbmcaddon
+import xbmcplugin
 from xbmcgui import ListItem
 from lib import wimpy
 from lib.wimpy.models import Album, Artist
@@ -32,7 +35,8 @@ config = wimpy.Config(
     country_code=addon.getSetting('country_code'),
     user_id=addon.getSetting('user_id'),
     api=wimpy.TIDAL_API if addon.getSetting('site') == '1' else wimpy.WIMP_API,
-    quality=[Quality.lossless, Quality.high, Quality.low][int('0'+addon.getSetting('quality'))],
+    quality=[Quality.lossless, Quality.high, Quality.low][
+        int('0' + addon.getSetting('quality'))],
 )
 wimp = wimpy.Session(config)
 
@@ -131,8 +135,8 @@ def artist_view(artist_id):
         ListItem('Similar Artists'), True
     )
     albums = wimp.get_artist_albums(artist_id) + \
-             wimp.get_artist_albums_ep_singles(artist_id) + \
-             wimp.get_artist_albums_other(artist_id)
+        wimp.get_artist_albums_ep_singles(artist_id) + \
+        wimp.get_artist_albums_other(artist_id)
     view(albums, urls_from_id(album_view, albums))
 
 
@@ -200,9 +204,11 @@ def search():
         query = dialog.input('Search')
         if query:
             res = wimp.search(field, query)
-            view(res.artists, urls_from_id(artist_view, res.artists), end=False)
+            view(res.artists, urls_from_id(
+                artist_view, res.artists), end=False)
             view(res.albums, urls_from_id(album_view, res.albums), end=False)
-            view(res.playlists, urls_from_id(playlist_view, res.playlists), end=False)
+            view(res.playlists, urls_from_id(
+                playlist_view, res.playlists), end=False)
             track_list(res.tracks)
 
 

@@ -30,12 +30,12 @@ Api = namedtuple('API', ['location', 'token'])
 WIMP_API = Api(
     location='https://play.wimpmusic.com/v1/',
     token='rQtt0XAsYjXYIlml',
-    )
+)
 
 TIDAL_API = Api(
     location='https://listen.tidalhifi.com/v1/',
     token='P5Xbeo5LFvESeDy6',
-    )
+)
 
 
 class Quality(object):
@@ -84,7 +84,8 @@ class Session(object):
         """ Returns true if current session is valid, false otherwise. """
         if self.user is None or not self.user.id or not self.session_id:
             return False
-        url = urljoin(self.api_location, 'users/%s/subscription' % self.user.id)
+        url = urljoin(self.api_location, 'users/%s/subscription' %
+                      self.user.id)
         return requests.get(url, params={'sessionId': self.session_id}).ok
 
     def request(self, method, path, params=None, data=None):
@@ -213,7 +214,7 @@ def _parse_playlist(json_obj):
         'num_tracks': int(json_obj['numberOfTracks']),
         'duration': int(json_obj['duration']),
         'is_public': json_obj['publicPlaylist'],
-        #TODO 'creator': _parse_user(json_obj['creator']),
+        # TODO 'creator': _parse_user(json_obj['creator']),
     }
     return Playlist(**kwargs)
 

@@ -17,7 +17,7 @@
 
 from __future__ import unicode_literals
 
-import xbmc, xbmcgui, xbmcaddon, xbmcplugin
+import xbmc, xbmcgui, xbmcaddon, xbmcplugin, sys
 from xbmcgui import ListItem
 from requests import HTTPError
 from lib import wimpy
@@ -291,19 +291,24 @@ def favourite_tracks():
 
 @plugin.route('/search')
 def search():
-    dialog = xbmcgui.Dialog()
-    fields = ['artist', 'album', 'playlist', 'track']
-    names = ['Artists', 'Albums', 'Playlists', 'Tracks']
-    idx = dialog.select('Search for', names)
-    if idx != -1:
-        field = fields[idx]
-        query = dialog.input('Search')
-        if query:
-            res = wimp.search(field, query)
-            view(res.artists, urls_from_id(artist_view, res.artists), end=False)
-            view(res.albums, urls_from_id(album_view, res.albums), end=False)
-            view(res.playlists, urls_from_id(playlist_view, res.playlists), end=False)
-            track_list(res.tracks)
+	add_directory('Artist', searchtype, _search='artist')
+	add_directory('Album', searchtype, _search='album')
+	add_directory('Playlist', searchtype, _search='playlist')
+	add_directory('Track', searchtype, _search='track')
+	xbmcplugin.endOfDirectory(plugin.handle)
+
+	
+@plugin.route('/search/<_search>')
+def searchtype(_search):
+	keyboard = xbmc.Keyboard('', 'Search')
+	keyboard.doModal()
+	if keyboard.isConfirmed():
+		result = keyboard.getText()
+		res = wimp.search(_search, result)
+		view(res.artists, urls_from_id(artist_view, res.artists), end=False)
+		view(res.albums, urls_from_id(album_view, res.albums), end=False)
+		view(res.playlists, urls_from_id(playlist_view, res.playlists), end=False)
+		track_list(res.tracks)
 
 
 @plugin.route('/login')

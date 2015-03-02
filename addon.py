@@ -294,7 +294,7 @@ def searchtype(field):
 	keyboard.doModal()
 	if keyboard.isConfirmed():
 		keyboardinput = keyboard.getText()
-		if searchresults is not '':
+		if keyboardinput is not '':
 			searchresults = wimp.search(field, keyboardinput)
 			view(res.artists, urls_from_id(artist_view, searchresults.artists), end = False)
 			view(res.albums, urls_from_id(album_view, searchresults.albums), end = False)

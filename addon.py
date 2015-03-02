@@ -281,19 +281,24 @@ def favourite_tracks():
 
 @plugin.route('/search')
 def search():
-    dialog = xbmcgui.Dialog()
-    fields = ['artist', 'album', 'playlist', 'track']
-    names = ['Artists', 'Albums', 'Playlists', 'Tracks']
-    idx = dialog.select('Search for', names)
-    if idx != -1:
-        field = fields[idx]
-        query = dialog.input('Search')
-        if query:
-            res = wimp.search(field, query)
-            view(res.artists, urls_from_id(artist_view, res.artists), end=False)
-            view(res.albums, urls_from_id(album_view, res.albums), end=False)
-            view(res.playlists, urls_from_id(playlist_view, res.playlists), end=False)
-            track_list(res.tracks)
+	add_directory('Artist', plugin.url_for(searchtype, field = 'artist'))
+	add_directory('Album', plugin.url_for(searchtype, field = 'album'))
+	add_directory('Playlist', plugin.url_for(searchtype, field = 'playlist'))
+	add_directory('Track', plugin.url_for(searchtype, field = 'track'))
+	xbmcplugin.endOfDirectory(plugin.handle)
+	
+@plugin.route('/searchtype/<field>')
+def searchtype(field):
+	keyboard = xbmc.Keyboard('', 'Search')
+	keyboard.doModal()
+	if keyboard.isConfirmed():
+		keyboardinput = keyboard.getText()
+		if keyboardinput:
+			searchresults = wimp.search(field, keyboardinput)
+			view(searchresults.artists, urls_from_id(artist_view, searchresults.artists), end = False)
+			view(searchresults.albums, urls_from_id(album_view, searchresults.albums), end = False)
+			view(searchresults.playlists, urls_from_id(playlist_view, searchresults.playlists), end = False)
+			track_list(searchresults.tracks)
 
 
 @plugin.route('/login')

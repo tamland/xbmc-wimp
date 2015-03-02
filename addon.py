@@ -281,20 +281,19 @@ def favourite_tracks():
 
 @plugin.route('/search')
 def search():
-	add_directory('Artist', searchtype, field = 'artist')
-	add_directory('Album', searchtype, field = 'album')
-	add_directory('Playlist', searchtype, field = 'playlist')
-	add_directory('Track', searchtype, field = 'track')
+	add_directory('Artist', plugin.url_for(searchtype, field = 'artist'))
+	add_directory('Album', plugin.url_for(searchtype, field = 'album'))
+	add_directory('Playlist', plugin.url_for(searchtype, field = 'playlist'))
+	add_directory('Track', plugin.url_for(searchtype, field = 'track'))
 	xbmcplugin.endOfDirectory(plugin.handle)
-
 	
-@plugin.route('/search/<field>')
+@plugin.route('/searchtype/<field>')
 def searchtype(field):
 	keyboard = xbmc.Keyboard('', 'Search')
 	keyboard.doModal()
 	if keyboard.isConfirmed():
 		keyboardinput = keyboard.getText()
-		if keyboardinput is not '':
+		if keyboardinput:
 			searchresults = wimp.search(field, keyboardinput)
 			view(searchresults.artists, urls_from_id(artist_view, searchresults.artists), end = False)
 			view(searchresults.albums, urls_from_id(album_view, searchresults.albums), end = False)

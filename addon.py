@@ -296,9 +296,9 @@ def searchtype(field):
 		keyboardinput = keyboard.getText()
 		if keyboardinput is not '':
 			searchresults = wimp.search(field, keyboardinput)
-			view(res.artists, urls_from_id(artist_view, searchresults.artists), end = False)
-			view(res.albums, urls_from_id(album_view, searchresults.albums), end = False)
-			view(res.playlists, urls_from_id(playlist_view, searchresults.playlists), end = False)
+			view(searchresults.artists, urls_from_id(artist_view, searchresults.artists), end = False)
+			view(searchresults.albums, urls_from_id(album_view, searchresults.albums), end = False)
+			view(searchresults.playlists, urls_from_id(playlist_view, searchresults.playlists), end = False)
 			track_list(searchresults.tracks)
 
 

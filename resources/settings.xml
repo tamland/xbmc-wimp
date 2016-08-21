@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-    <setting label="30004" id="quality" type="select" lvalues="30005|30006|30007" default="1"/>
-    <setting label="30008" id="username" type="text" default=""/>
-    <setting label="30009" id="password" type="text" option="hidden" default=""/>
+  <category label="30011">
+    <setting label="30001" id="username" type="text" default=""/>
+    <setting label="30002" id="password" type="text" option="hidden" default=""/>
+    <setting label="30012" id="subscription_type" type="select" lvalues="30028|30029" default="0"/>
+    <setting label="30003" id="country" type="text" default=""/>
+    <setting label="30037" id="reset_user_cache" type="action" action="RunPlugin(plugin://plugin.audio.wimp/reset_user_cache)"/>
+    <setting label="30004" id="debug" type="bool" default="false" />
+    <setting label="30075" id="debug_server" type="text" default="localhost" visible="eq(-1,true)"/>
+    <setting label="30070" id="log_details" type="select" lvalues="30071|30072|30073|30074" default="0"/>
+  </category>
+  <category label="30010">
+    <setting label="30036" id="view_mode_folders" type="enum" lvalues="30050|30051|30052|30053|30054" default="4" />
+    <setting label="30014" id="page_size" type="number" default="300"/>
+    <setting label="30015" id="top_limit" type="number" default="100"/>
+    <setting label="30005" id="folder_color" type="text" default="blue"/>
+    <setting label="30009" id="show_fanart" type="bool" default="true"/>
+    <setting label="30008" id="user_notifications" type="bool" default="false" />
+    <setting label="30018" id="user_confirmations" type="bool" default="false" />    
+    <setting label="30007" id="cache_favorites" type="bool" default="true" />
+    <setting label="30006" id="favorite_color" type="text" default="yellow" subsetting="true"/>
+    <setting label="30019" id="cache_playlists" type="bool" default="true" />
+    <setting label="30017" id="user_playlist_color" type="text" default="limegreen" subsetting="true"/>
+    <setting label="30013" id="not_playable_color" type="text" default="maroon"/>
+    <setting label="30078" id="import_export_path" type="folder" source="auto" option="writeable"/>
+  </category>
+  <category label="30025">
+    <setting label="30020" id="quality" type="text" visible="false"/>
+    <setting label="30020" id="music_quality" type="select" lvalues="30023|30022|30021" default="1"/>
+    <setting label="30030" id="view_mode_genres" type="enum" lvalues="30050|30051|30052|30053|30054" default="4" />
+    <setting label="30031" id="view_mode_playlists" type="enum" lvalues="30050|30051|30052|30053|30054" default="4" />
+    <setting label="30032" id="view_mode_artists" type="enum" lvalues="30050|30051|30052|30053|30054" default="4" />
+    <setting label="30033" id="view_mode_albums" type="enum" lvalues="30050|30051|30052|30053|30054" default="4" />
+    <setting label="30034" id="view_mode_tracks" type="enum" lvalues="30050|30051|30052|30053|30054" default="4" />
+    <setting label="30035" id="show_album_type" type="bool" default="true" />
+    <setting label="30076" id="cache_albums" type="bool" default="false" />
+    <setting label="30077" id="max_http_requests" type="slider" default="20" range="0,1,50" option="int" visible="eq(-1,true)"/>
+  </category>
+  <category label="30105">
+    <setting label="30040" id="video_quality" type="enum" lvalues="30041|30042|30043|30044|30045|30046|30047" default="1" />
+    <setting label="30026" id="slow_servers" type="text" default="cm-packager" />
+    <setting label="30027" id="slow_video_quality" type="enum" lvalues="30041|30042|30043|30044|30045|30046|30047" default="1" />
+    <setting label="30048" id="view_mode_videos" type="enum" lvalues="30050|30051|30052|30053|30054" default="4" />
+  </category>
 </settings>
+

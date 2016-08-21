@@ -1,3 +1,54 @@
+[B]2.0.0[/B]
+
+- The biggest new features are:
+  - Music Video Support
+  - Complete support for Favorites and User Playlist
+  - Colored Labels to indicate Favorites and User Playlist members
+  - German Translation
+  - Trial Mode (plays 30 seconds of each title/video when not logged in, no subscription needed)
+
+- Other changes and new features:
+  - Country for localized media can be changed
+  - Subscription Type and Playback Quality can have different values now.
+    So you can have a HiFi Subscription and listen to music with 320 kbps or 96 kbps.
+  - Costomizable Default Views for each type of folder/media
+  - Fanart background images for selected media items
+  - Album type is displayed in each label of an album (ALBUM, SINGLE, EP)
+  - Artist Info on the Artist Page
+  - Cache for Favorites, User Playlists and Album Data
+
+Detailed Infos of some new features:
+
+- Music Video Support:
+  - Added the M3U8 Parser V0.2.8 from https://github.com/globocom/m3u8 to select video resolution
+  - Autmatically select Video stream resolution (doesn't work for HLS Streams)
+  - Maximum video resolution can be defined in the Addon Settings
+  - Reduced resolution is automatically used for "slow" TIDAL servers specified in the Addon Settings
+
+- Favorites and User Playlist Handling:
+  - Support to add/remove Favorite Artists, Albums, Playlists, Tracks and Videos
+  - Support to work with user playlists 
+    (create/remove/copy user playlists, add/remove/copy tracks and videos to/from user playlists)
+  - Include Favorite actions into the Context Menu
+  - Addon Setting to enable confirmation dialog for every Favorite and Playlist action
+  - Addon Setting to enable Notification messages for Favorite ans Playlist actions
+  - Favorites and User Playlists can be exported to files and imported again
+  
+- Colored Labels:
+  - Folder Color (default is blue)
+  - Color for Favorite Artists, Albums, Playlists, Tracks and Videos (default is yellow)
+  - Color for Locked Tracks (default is maroon) 
+  - If Tracks or Videos are in User Playlists, the names of the user playlists are appended 
+    to the Item Label in a user defined color (default is limegreen)
+  - All colors can be changed in the Addon Settings
+
+- Cache for Album Data and User Favorites and Playlists:
+  - The album data contains the correct release dates of the Albums. To display the correct
+    release year of each Track the Album Data has to be read for each Track item.
+  - The album data is saved into the SQLite Database "metaCache.db" in the Addons UserData folder.
+  - Using parallel HTTP requests to read album data from TIDAL.
+    The first request of a Tack List can take more time because the Album Cache is empty at begin.
+
 [B]1.2.2[/B]
 - Fixed album listing due to site changes
 

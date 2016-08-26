@@ -41,8 +41,7 @@
     <string id="30034">Ansicht für Titel</string>
     <string id="30035">Album-Typ im Text anzeigen</string>
     <string id="30036">Ansicht für Ordner</string>
-    <string id="30037">UserPlaylist-Cache zurücksetzen</string>
-    <string id="30038">Label-Maske für 'Explicit'</string>
+    <string id="30037">UserPlaylist-/Favoriten-Cache neu laden</string>
 
     <!-- Video Settings -->
     <string id="30040">Video-Qualität</string>
@@ -61,10 +60,6 @@
     <string id="30052">Große Liste</string>
     <string id="30053">Vorschaubild</string>
     <string id="30054">Medieninformationen</string>
-    <string id="30055">Poster Wrap</string>
-    <string id="30056">Fanart</string>
-    <string id="30057">Media Info 2</string>
-    <string id="30058">Media Info 3</string>
 
     <!-- Extended Settings -->
     <string id="30070">Detailliertes Loggen</string>
@@ -75,7 +70,7 @@
     <string id="30075">Remote Debug Server</string>
     <string id="30076">Album-Cache verwenden (für korrektes Jahr in Titel-Listen)</string>
     <string id="30077">Max. Anzahl paralleler HTTP-Requests</string>
-    <string id="30078">Import-/Export-Verzeichnis</string>
+    <string id="30078">Export-/Import-Verzeichnis</string>
 
     <!-- Program Text -->
     <string id="30101">Künstler</string>
@@ -180,6 +175,8 @@
     <string id="30276">{n} importiert</string>    
     <string id="30277">Nächste Seite ({pos1}-{pos2})</string>
     <string id="30278">%s Alben nicht geladen</string>
+    <string id="30279">%s-Favoriten Löschen</string>
+    <string id="30280">Cache-Aufbau abgeschlossen</string>
 
     <!-- Artist Page -->
     <string id="30301">Künstler-Radio</string>

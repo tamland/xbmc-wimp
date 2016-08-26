@@ -3,16 +3,16 @@
 # Copyright (C) 2014 Thomas Amland, Arne Svenson
 #
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
+# it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# GNU General Public License for more details.
 #
-# You should have received a copy of the GNU Lesser General Public License
+# You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
@@ -40,12 +40,11 @@ plugin.name = settings.addon_name
 # Build media list for Artists, Albums, Playlists, Tracks, Videos
 #------------------------------------------------------------------------------
 
-def add_media(data_items, content=None, end=True, withNextPage=False):
+def add_media(data_items, content=None, viewMode=None, end=True, withNextPage=False):
     if content:
         xbmcplugin.setContent(plugin.handle, content)
     list_items = []
     folder_path = sys.argv[0]
-    view_mode = 'albums'
     isLoggedIn = len(settings._session_id) > 1
     
     item = None
@@ -54,8 +53,9 @@ def add_media(data_items, content=None, end=True, withNextPage=False):
         url = plugin.url_for_path('/do_nothing')
         folder = not isinstance(item, TrackItem) and not isinstance(item, VideoItem)
         cm = []
-        cm.append((_T('Play this'), 'Action(Play)'))
-        view_mode = item._view_mode
+        if settings.kodiVersion <= '16':
+            # On Kodi 17 the context menue can't be replaced
+            cm.append((_T('Play this'), 'Action(Play)'))
 
         if isinstance(item, ArtistItem):
             url = plugin.url_for_path('/artist_view/%s' % item.id)
@@ -99,7 +99,7 @@ def add_media(data_items, content=None, end=True, withNextPage=False):
                     else:
                         cm.append((_T('Set as Default %s Playlist') % _T('Video'), 'RunPlugin(%s)' % plugin.url_for_path('/user_playlist_set_default/videos/%s' % item.id)))                
                     cm.append((_T('Delete Playlist'), 'RunPlugin(%s)' % plugin.url_for_path('/user_playlist_delete/%s' % item.id)))                
-                if item.type == 'USER':
+                if item.type == 'USER' and len(settings.import_export_path) > 0:
                     cm.append((_T('Export {what}').format(what=_T('Playlist')), 'RunPlugin(%s)' % plugin.url_for_path('/user_playlist_export/%s' % item.id)))
 
         elif isinstance(item, TrackItem):
@@ -161,9 +161,13 @@ def add_media(data_items, content=None, end=True, withNextPage=False):
 
         li = item.getListItem()
 
-        if xbmc.getInfoLabel('System.BuildVersion')[:2] < '16':
+        if settings.kodiVersion <> '16':
+            # On Jarvis the Addon Settings are added by default.
             cm.append((_T('Addon Settings'), 'Addon.OpenSettings("%s")' % settings.addon_id))
-        li.addContextMenuItems(cm, replaceItems=True)
+        if settings.kodiVersion <= '16':
+            li.addContextMenuItems(cm, replaceItems=True)
+        else:
+            li.addContextMenuItems(cm)
         list_items.append((url, li, folder))
         
     if withNextPage and item:
@@ -180,8 +184,9 @@ def add_media(data_items, content=None, end=True, withNextPage=False):
             debug.log('Next Page for URL %s not set' % sys.argv[0], xbmc.LOGERROR)
     xbmcplugin.addDirectoryItems(plugin.handle, list_items)
     if end:
-        setViewMode(view_mode)
         xbmcplugin.endOfDirectory(plugin.handle)
+        if content and viewMode:
+            setViewMode(content, viewMode)
 
 
 #------------------------------------------------------------------------------
@@ -190,6 +195,7 @@ def add_media(data_items, content=None, end=True, withNextPage=False):
 
 def add_search_result(searchresults, sort=None, reverse=False, end=True):
     headline = '-------------------- %s --------------------'
+    xbmcplugin.setContent(plugin.handle, 'songs')
     if searchresults.artists.__len__() > 0:
         add_directory(headline % _T('Artists'), plugin.url_for_path('/do_nothing'), color=settings.favoriteColor, isFolder=False)
         if sort:
@@ -216,8 +222,8 @@ def add_search_result(searchresults, sort=None, reverse=False, end=True):
             searchresults.videos.sort(key=lambda line: line.getSortField(sort), reverse=reverse)
         add_media(searchresults.videos, end=False)
     if end:
-        setViewMode('tracks')
         xbmcplugin.endOfDirectory(plugin.handle)
+        setViewMode('songs', 'playlists')
 
 #------------------------------------------------------------------------------
 # Add a directory item
@@ -235,11 +241,14 @@ def add_directory(item, endpoint, image=None, fanart=None, info=None, color=None
     cm.append((_T('Open this'), 'Action(Play)'))
     if contextmenu:
         for contextitem in contextmenu: cm.append(contextitem)
-    if xbmc.getInfoLabel('System.BuildVersion')[:2] < '16':
+    if settings.kodiVersion <> '16':
         cm.append((_T('Addon Settings'), 'Addon.OpenSettings("%s")' % settings.addon_id))    
     if isinstance(item, FolderItem):
         li = item.getListItem()
-        li.addContextMenuItems(cm, replaceItems=True)
+        if settings.kodiVersion <= '16':
+            li.addContextMenuItems(cm, replaceItems=True)
+        else:
+            li.addContextMenuItems(cm)
         xbmcplugin.addDirectoryItem(plugin.handle, endpoint, li, isFolder=True)
         return
     label = item
@@ -257,50 +266,53 @@ def add_directory(item, endpoint, image=None, fanart=None, info=None, color=None
         li.setArt({'fanart': fanart})
     if info:
         li.setInfo('music', {'artist': info})
-    li.addContextMenuItems(cm, replaceItems=True)
+    if settings.kodiVersion <= '16':
+        li.addContextMenuItems(cm, replaceItems=True)
+    else:
+        li.addContextMenuItems(cm)
     xbmcplugin.addDirectoryItem(plugin.handle, endpoint, li, isFolder=isFolder)
 
 #------------------------------------------------------------------------------
 # Set the view mode of the container (depending on config settings)
 #------------------------------------------------------------------------------
 
-def setViewMode(viewMode='tracks'):
-    #isVideoMode = xbmcgui.getCurrentWindowId() == 10025
+SkinViewModes = { 'skin.confluence': {'1': {'default': '50'},   # CommonRootView
+                                      '2': {'default': '51'},   # FullWidthList
+                                      '3': {'default': '500'},  # ThumbnailView
+                                      '4': {'default': '506',   # MusicInfoListView
+                                            'musicvideos': '506' if settings.kodiVersion <= '16' else '511', # MusicVideoInfoListView
+                                            'artists': '506' if settings.kodiVersion <= '16' else '512',   # ArtistMediaListView
+                                            'albums': '506' if settings.kodiVersion <= '16' else '513', # AlbumInfoListView
+                                            'songs': '506' }    # MusicInfoListView
+                                       },
+                  'skin.estuary':    {'1': {'default': '55'},   # WideList
+                                      '2': {'default': '55'},   # WideList (no full with in skin Estuary)
+                                      '3': {'default': '500'},  # SmallThumbs
+                                      '4': {'default': '55'},   # WideList
+                                       },
+                  'default':         {'1': {'default': '50'},   # CommonRootView
+                                      '2': {'default': '51'},   # FullWidthList
+                                      '3': {'default': '500'},  # ThumbnailView
+                                      '4': {'default': '506'}   # MusicInfoListView
+                                       }
+    }
+
+def setViewMode(content, viewMode):
     mode = config.getSetting('view_mode_%s' % viewMode)
     if not mode:
         mode = config.getSetting('view_mode_%ss' % viewMode)
     if mode and mode != "0":
         try:
-            # Confluence-Ids:
-            # 50 -->  CommonRootView
-            # 51 -->  FullWidthList
-            # 500 --> ThumbnailView
-            # 506 --> MusicInfoListView
-            # 509 --> AlbumWrapView2_Fanart
-            # 511 --> MusicVideoInfoListView
-            # 512 --> ArtistMediaListView
-            # 513 --> AlbumInfoListView
-            # 550 --> AddonInfoListView1
-            # 551 --> AddonInfoThumbView1
-            # xbmc.getSkinDir()
-            if mode == "1": # List
-                xbmc.executebuiltin('Container.SetViewMode(50)') # Liste mit Icon (502) 50
-            elif mode == "2": # Big List
-                xbmc.executebuiltin('Container.SetViewMode(51)') # ok
-            elif mode == "3": # Thumbnails
-                xbmc.executebuiltin('Container.SetViewMode(500)') # ok
-            elif mode == "4":  # Media info (506 for music mode, 511 for video mode)
-                xbmc.executebuiltin('Container.SetViewMode(506)')
-            elif mode == "5": # Poster Wrap
-                xbmc.executebuiltin('Container.SetViewMode(501)')
-            elif mode == "6": # Fanart
-                xbmc.executebuiltin('Container.SetViewMode(508)')
-            elif mode == "7": # Media info 2
-                xbmc.executebuiltin('Container.SetViewMode(503)') # for movies
-            elif mode == "8": # Media info 3
-                xbmc.executebuiltin('Container.SetViewMode(515)')
+            skinModes = SkinViewModes.get(settings.skinTheme)
+            if not skinModes:
+                skinModes = SkinViewModes.get('default')
+            if mode in skinModes:
+                newModes = skinModes.get(mode) 
+                newMode = newModes.get(content if content in newModes else 'default')
+                if newMode: 
+                    debug.log("SetViewMode: %s,%s,%s,%s,%s" % (content, viewMode, mode, settings.skinTheme, newMode), xbmc.LOGSEVERE)
+                    xbmc.executebuiltin('Container.SetViewMode(%s)' % newMode)
         except:
-            debug.log("SetViewMode Failed: "+mode)
-            debug.log("Skin: "+xbmc.getSkinDir())
+            debug.log("SetViewMode %s failed for %s,%s in skin %s" % (mode, content, viewMode, settings.skinTheme))
 
 # End of File

@@ -5,7 +5,7 @@
     <setting label="30002" id="password" type="text" option="hidden" default=""/>
     <setting label="30012" id="subscription_type" type="select" lvalues="30028|30029" default="0"/>
     <setting label="30003" id="country" type="text" default=""/>
-    <setting label="30037" id="reset_user_cache" type="action" action="RunPlugin(plugin://plugin.audio.wimp/reset_user_cache)"/>
+    <setting label="30037" id="reset_user_cache" type="action" action="RunPlugin(plugin://plugin.audio.wimp/reload_user_cache)"/>
     <setting label="30004" id="debug" type="bool" default="false" />
     <setting label="30075" id="debug_server" type="text" default="localhost" visible="eq(-1,true)"/>
     <setting label="30070" id="log_details" type="select" lvalues="30071|30072|30073|30074" default="0"/>
@@ -28,7 +28,6 @@
   <category label="30025">
     <setting label="30020" id="quality" type="text" visible="false"/>
     <setting label="30020" id="music_quality" type="select" lvalues="30023|30022|30021" default="1"/>
-    <setting label="30030" id="view_mode_genres" type="enum" lvalues="30050|30051|30052|30053|30054" default="4" />
     <setting label="30031" id="view_mode_playlists" type="enum" lvalues="30050|30051|30052|30053|30054" default="4" />
     <setting label="30032" id="view_mode_artists" type="enum" lvalues="30050|30051|30052|30053|30054" default="4" />
     <setting label="30033" id="view_mode_albums" type="enum" lvalues="30050|30051|30052|30053|30054" default="4" />

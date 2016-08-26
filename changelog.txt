@@ -1,39 +1,23 @@
 [B]2.0.0[/B]
 
-- The biggest new features are:
+- Summary of changes:
   - Music Video Support
-  - Complete support for Favorites and User Playlist
-  - Colored Labels to indicate Favorites and User Playlist members
+  - Complete Favorites and User Playlist Handling
+  - Colored Item Labels to indicate Favorites and User Playlist members
   - German Translation
   - Trial Mode (plays 30 seconds of each title/video when not logged in, no subscription needed)
+  - Shortcut functions to use as Actions in keyboard.xml or remote.xml
 
-- Other changes and new features:
-  - Country for localized media can be changed
-  - Subscription Type and Playback Quality can have different values now.
-    So you can have a HiFi Subscription and listen to music with 320 kbps or 96 kbps.
-  - Costomizable Default Views for each type of folder/media
-  - Fanart background images for selected media items
+Detailed Infos of all new features:
+
+- GUI Changes:
+  - Limit for the number of items per page set to 300 or 100 for Top Tracks / Recommended Items.
+    Smaller Page sizes are recommended for slower Hardware like Raspberry Pi or Android Devices.
+    The Page sizese can be set up to 999 in the Addon Settings.
+  - Costomizable Default Views for each type of folder/media (List, BigList, Thumbnail View, Media Info)
+  - Artist Fanart background images for selected media items
   - Album type is displayed in each label of an album (ALBUM, SINGLE, EP)
-  - Artist Info on the Artist Page
-  - Cache for Favorites, User Playlists and Album Data
 
-Detailed Infos of some new features:
-
-- Music Video Support:
-  - Added the M3U8 Parser V0.2.8 from https://github.com/globocom/m3u8 to select video resolution
-  - Autmatically select Video stream resolution (doesn't work for HLS Streams)
-  - Maximum video resolution can be defined in the Addon Settings
-  - Reduced resolution is automatically used for "slow" TIDAL servers specified in the Addon Settings
-
-- Favorites and User Playlist Handling:
-  - Support to add/remove Favorite Artists, Albums, Playlists, Tracks and Videos
-  - Support to work with user playlists 
-    (create/remove/copy user playlists, add/remove/copy tracks and videos to/from user playlists)
-  - Include Favorite actions into the Context Menu
-  - Addon Setting to enable confirmation dialog for every Favorite and Playlist action
-  - Addon Setting to enable Notification messages for Favorite ans Playlist actions
-  - Favorites and User Playlists can be exported to files and imported again
-  
 - Colored Labels:
   - Folder Color (default is blue)
   - Color for Favorite Artists, Albums, Playlists, Tracks and Videos (default is yellow)
@@ -42,12 +26,55 @@ Detailed Infos of some new features:
     to the Item Label in a user defined color (default is limegreen)
   - All colors can be changed in the Addon Settings
 
-- Cache for Album Data and User Favorites and Playlists:
-  - The album data contains the correct release dates of the Albums. To display the correct
+- Other TIDAL functions:
+  - Some extra functions available in Context Menue:
+    * Track Radio
+    * Track Recommendations
+    * Similar Artists
+    * Artist Radio
+    * Video Recommendations
+  - Country for localized media can be changed
+  - Subscription Type and Playback Quality can have different values now.
+    So you can have a HiFi Subscription and listen to music with 320 kbps or 96 kbps.
+  - Artist Info on the Artist Page
+
+- Music Video Support:
+  - Added the M3U8 Parser V0.2.10 from https://github.com/globocom/m3u8 to select video resolution
+  - Autmatically select Video stream resolution (doesn't work for HLS Streams)
+  - Maximum video resolution can be defined in the Addon Settings
+  - Reduced resolution is automatically used for "slow" TIDAL servers specified in the Addon Settings
+
+- Favorites and User Playlist Handling:
+  - Support to add/remove Favorite Artists, Albums, Playlists, Tracks and Videos
+  - Support to work with user playlists:
+    * create/delete/copy user playlists
+    * add/remove/copy tracks and videos to/from User Playlists
+  - Default User Playlists for new Tracks/Videos can be defined.
+    Usefull when using Shortcuts in keyboard.xml or remote.xml to add/remove items to/from the default Playlist.
+  - Addon Setting to enable confirmation dialog for every Favorite and Playlist action
+  - Addon Setting to enable Notification messages for Favorite and Playlist actions
+  - Favorites and User Playlists can be exported to files and imported again.
+    Available in Context Menue when Export/Import Path is set in Addon Settings.
+
+- Cache for Album Data and User Favorites/Playlists:
+  - Only the album data contains the correct release dates of the Albums. To display the correct
     release year of each Track the Album Data has to be read for each Track item.
   - The album data is saved into the SQLite Database "metaCache.db" in the Addons UserData folder.
   - Using parallel HTTP requests to read album data from TIDAL.
-    The first request of a Tack List can take more time because the Album Cache is empty at begin.
+    The first request of a Tack List can take more time because the Album Cache is empty at begin !
+    But Caution: Too Many Requests can cause a lock on the TIDAL Server for a few minutes !
+
+- Shortcuts to be used as Actions in keyboard.xml or remote.xml:
+  Examples:
+  * Clear / Reload Cache for Favorites and User Playlists:
+      RunPlugin(plugin://plugin.audio.wimp/reset_user_cache)
+      RunPlugin(plugin://plugin.audio.wimp/reload_user_cache)
+  * Add/Remove Item to/from the default User Playlist:
+      RunPlugin(plugin://plugin.audio.wimp/user_playlist_toggle)
+  * Add/Remove Item to/from Favorites
+      RunPlugin(plugin://plugin.audio.wimp/favorite_toggle)
+  * Jump to the User Home Screen
+      Container.Update(plugin://plugin.audio.wimp/user_home)
 
 [B]1.2.2[/B]
 - Fixed album listing due to site changes

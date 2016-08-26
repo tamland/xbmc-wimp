@@ -3,16 +3,16 @@
 # Copyright (C) 2014 Thomas Amland, Arne Svenson
 #
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
+# it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# GNU General Public License for more details.
 #
-# You should have received a copy of the GNU Lesser General Public License
+# You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
@@ -166,6 +166,7 @@ class Config(object):
         self.cacheAlbums = True if addon.getSetting('cache_albums') == 'true' else False
         self.max_http_requests = int('0%s' % addon.getSetting('max_http_requests'))
         self.cacheDir = xbmc.translatePath(addon.getAddonInfo('profile')).decode('utf-8')
+        self.import_export_path = addon.getSetting('import_export_path').decode('utf-8')
         self.showNotifications = True if addon.getSetting('user_notifications') == 'true' else False
         self.confirmFavoriteActions = True if addon.getSetting('user_confirmations') == 'true' else False
         self.default_trackplaylist = addon.getSetting('default_trackplaylist').decode('utf-8')
@@ -179,6 +180,15 @@ class Config(object):
         self.maxVideoHeight = [VideoQuality._max, VideoQuality._1080p, VideoQuality._720p, VideoQuality._540p, VideoQuality._480p, VideoQuality._360p, VideoQuality._240p][int('0%s' % addon.getSetting('video_quality'))]
         self.maxVideoHeightSlowServers = [VideoQuality._max, VideoQuality._1080p, VideoQuality._720p, VideoQuality._540p, VideoQuality._480p, VideoQuality._360p, VideoQuality._240p][int('0%s' % addon.getSetting('slow_video_quality'))]
         self.slowServers = addon.getSetting('slow_servers').split(' ')
+        # Other Settings
+        try:
+            self.kodiVersion = '16'
+            self.kodiVersion = xbmc.getInfoLabel('System.BuildVersion').split()[0]
+            self.kodiVersion = self.kodiVersion.split('.')[0]
+        except:
+            pass
+        self.skinTheme = xbmc.getSkinDir()
+
         
 #------------------------------------------------------------------------------
 # Configuration

@@ -3,16 +3,16 @@
 # Copyright (C) 2014 Thomas Amland, Arne Svenson
 #
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
+# it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# GNU General Public License for more details.
 #
-# You should have received a copy of the GNU Lesser General Public License
+# You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
@@ -789,6 +789,8 @@ class EmptyFavorites(object):
     def load_videos(self, onlyBaseItems=False): return []
     def isFavoriteVideo(self, video_id): return False
     def do_action(self, action, item, forceConfirm=False): return False
+    def export_ids(self, what, filename, action, remove=None): return False
+    def import_ids(self, what, filename, action): return
 
 # The 'Real' User Favorites
 class Favorites(EmptyFavorites):
@@ -1110,10 +1112,10 @@ class Favorites(EmptyFavorites):
             dialog.notification(settings.addon_name, _T('Unknown type of Favorite'), xbmcgui.NOTIFICATION_ERROR)
             return False
 
-    def export_ids(self, what, filename, action):
-        path = config.getSetting('import_export_path')
+    def export_ids(self, what, filename, action, remove=None):
+        path = settings.import_export_path
         if len(path) == 0:
-            path = settings.cacheDir
+            return
         items = action(onlyBaseItems=False)
         if items and len(items) > 0:
             lines = [item.id + '\t' + item.getLabel(colored=False) + '\n' for item in items]
@@ -1123,6 +1125,23 @@ class Favorites(EmptyFavorites):
                 f.write(line.encode('utf-8'))
             f.close()
             xbmcgui.Dialog().notification(what, _T('{n} exported').format(n=len(lines)), xbmcgui.NOTIFICATION_INFO)
+            if remove:
+                ok = xbmcgui.Dialog().yesno(heading=_T('Deleting Favorite %s') % what, line1=_T('Remove {kind} "{name}" from Favorites ?').format(kind=len(items), name=what))
+                if ok:
+                    progress = xbmcgui.DialogProgress()
+                    progress.create(_T('Deleting Favorite %s') % what)
+                    idx = 0
+                    for item in items:
+                        if progress.iscanceled():
+                            break
+                        idx = idx + 1
+                        percent = (idx * 100) / len(items) 
+                        progress.update(percent, item.getLabel(colored=False))
+                        try:
+                            remove(item.id)
+                        except:
+                            break
+                    progress.close()
     
     def import_ids(self, what, filename, action):
         try:
@@ -1238,6 +1257,8 @@ class User(TrialUser):
                 if not cache_id in playlist_ids:
                     debug.log('MetaCache: Deleting UserPlaylist "%s"' % cache_id)
                     self._session.metaCache.delete('userpl', cache_id)
+            if len(playlist_ids) == 0:
+                self._session.metaCache.insertUserPlaylist('dummy', 'Empty', [])
         if markDefault:
             # Select Default UserPlaylist as Favorite and UserPlaylist Color
             for item in items:
@@ -1284,13 +1305,20 @@ class User(TrialUser):
         items = self._session.metaCache.fetchAllData('userpl')
         # Playlists without items to reload
         itemsToReload = [item for item in items if not 'items' in item]
+        if 'dummy' in itemsToReload:
+            if len(itemsToReload) == 1:
+                debug.log('User has no UserPlaylist !')
+                return
+            debug.log('MetaCache: Deleting UserPlaylist "dummy"')
+            self._session.metaCache.delete('userpl', 'dummy')
         loadedPlaylists = {}
         if not items or itemsToReload:
             # Download all UserPlaylists to (re)create Cache entries
             debug.log('Loading UserPlaylists for Cache ...')
             userplaylists = self.get_playlists(markDefault=False)
             for item in userplaylists:
-                loadedPlaylists.update({item.id: item})
+                if item.id <> 'dummy':
+                    loadedPlaylists.update({item.id: item})
             # Read updated Cache entries
             items = self._session.metaCache.fetchAllData('userpl')
             # Playlists without items to reload
@@ -1384,6 +1412,16 @@ class User(TrialUser):
         # Refresh buffer of Playlist Tracks
         self.setPlaylistModified(playlist_id, overwrite=True)
         if ok:
+            if playlist_id == settings.default_trackplaylist_id:
+                settings.default_trackplaylist_id = ''
+                settings.default_trackplaylist = ''
+                config.setSetting('default_trackplaylist_id', '')
+                config.setSetting('default_trackplaylist', '')
+            elif playlist_id == settings.default_videoplaylist_id:
+                settings.default_videoplaylist_id = ''
+                settings.default_videoplaylist = ''
+                config.setSetting('default_videoplaylist_id', '')
+                config.setSetting('default_videoplaylist', '')
             if settings.showNotifications and notify:
                 xbmcgui.Dialog().notification(title if title else playlist_id, _T('Playlist deleted'), xbmcgui.NOTIFICATION_INFO)
         else:
@@ -1449,9 +1487,9 @@ class User(TrialUser):
         return ok
 
     def export_playlists(self, playlists, filename):
-        path = config.getSetting('import_export_path')
+        path = settings.import_export_path
         if len(path) == 0:
-            path = settings.cacheDir
+            return
         full_path = os.path.join(path, filename)
         fd = xbmcvfs.File(full_path, 'w')
         numItems = 0

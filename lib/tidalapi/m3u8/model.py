@@ -13,7 +13,7 @@ try:
 except ImportError:
     import urllib.parse as url_parser
 
-import parser
+from . import parser
 
 
 class M3U8(object):
@@ -136,8 +136,8 @@ class M3U8(object):
 
         self._initialize_attributes()
         self.base_path = base_path
-        self.cookies = cookies               
-
+        self.cookies = cookies
+        
     def _initialize_attributes(self):
         self.key = Key(base_uri=self.base_uri, **self.data['key']) if 'key' in self.data else None
         self.segments = SegmentList([ Segment(base_uri=self.base_uri, **params)
@@ -329,6 +329,12 @@ class Segment(BasePathMixin):
     `cue_out`
       Returns a boolean indicating if a EXT-X-CUE-OUT-CONT tag exists
 
+    `scte35`
+      Base64 encoded SCTE35 metadata if available
+
+    `scte35_duration`
+      Planned SCTE35 duration
+
     `duration`
       duration attribute from EXTINF parameter
 
@@ -343,7 +349,8 @@ class Segment(BasePathMixin):
     '''
 
     def __init__(self, uri, base_uri, program_date_time=None, duration=None,
-                 title=None, byterange=None, cue_out=False, discontinuity=False, key=None):
+                 title=None, byterange=None, cue_out=False, discontinuity=False, key=None,
+                 scte35=None, scte35_duration=None):
         self.uri = uri
         self.duration = duration
         self.title = title
@@ -352,6 +359,8 @@ class Segment(BasePathMixin):
         self.program_date_time = program_date_time
         self.discontinuity = discontinuity
         self.cue_out = cue_out
+        self.scte35 = scte35
+        self.scte35_duration = scte35_duration
         self.key = Key(base_uri=base_uri,**key) if key else None
 
 
@@ -382,7 +391,6 @@ class Segment(BasePathMixin):
 
     def __str__(self):
         return self.dumps(None)
-
 
 class SegmentList(list, GroupedBasePathMixin):
 
@@ -506,9 +514,14 @@ class Playlist(BasePathMixin):
         if self.stream_info.codecs:
             stream_inf.append('CODECS=' + quoted(self.stream_info.codecs))
 
+        media_types = []
         for media in self.media:
-            media_type = media.type.upper()
-            stream_inf.append('%s="%s"' % (media_type, media.group_id))
+            if media.type in media_types:
+                continue
+            else:
+                media_types += [media.type]
+                media_type = media.type.upper()
+                stream_inf.append('%s="%s"' % (media_type, media.group_id))
 
         return '#EXT-X-STREAM-INF:' + ','.join(stream_inf) + '\n' + self.uri
 

@@ -41,8 +41,7 @@
     <string id="30034">View Mode For Tracks</string>
     <string id="30035">Show Album Type in Label</string>
     <string id="30036">View Mode For Folders</string>
-    <string id="30037">Reset UserPlaylist Cache</string>
-    <string id="30038">Label-Mask for 'Explicit' tracks</string>
+    <string id="30037">Reload UserPlaylist/Favorites Cache</string>
 
     <!-- Video Settings -->
     <string id="30040">Playback Quality</string>
@@ -61,10 +60,6 @@
     <string id="30052">Big List</string>
     <string id="30053">Thumbnail</string>
     <string id="30054">Media Info</string>
-    <string id="30055">Poster Wrap</string>
-    <string id="30056">Fanart</string>
-    <string id="30057">Media Info 2</string>
-    <string id="30058">Media Info 3</string>
 
     <!-- Extended Settings -->
     <string id="30070">Extended Logging</string>
@@ -75,7 +70,7 @@
     <string id="30075">Remote Debug Server</string>
     <string id="30076">Use Album Cache for Release-Dates in Track Lists</string>
     <string id="30077">Max Count of parallel HTTP-Requests</string>
-    <string id="30078">Import/Export Path</string>
+    <string id="30078">Export/Import Path</string>
 
     <!-- Program Text -->
     <string id="30101">Artist</string>
@@ -180,6 +175,8 @@
     <string id="30276">{n} imported</string>
     <string id="30277">Next Page ({pos1}-{pos2})</string>
     <string id="30278">%s Albums not loaded</string>
+    <string id="30279">Deleting Favorite %s</string>
+    <string id="30280">Cache Rebuild complete</string>
     
     <!-- Artist Page -->
     <string id="30301">Artist Radio</string>

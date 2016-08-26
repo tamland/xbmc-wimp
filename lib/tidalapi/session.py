@@ -212,10 +212,10 @@ class Session(object):
         else:
             # Request with Preview-Token
             request_params.update({'token': CONST.apiToken['PREVIEW']})
-        if settings.log_details == 2:
+        if settings.log_details == 3:
             debug.log("Request: %s" % url, xbmc.LOGSEVERE)
         r = requests.request(method, url, params=request_params, data=data, headers=headers)
-        if settings.log_details in [1, 2]:
+        if settings.log_details in [2, 3]:
             debug.log("Answer : %s" % r.url, xbmc.LOGDEBUG)
         if not r.ok:
             debug.log(r.url, xbmc.LOGERROR)
@@ -232,7 +232,7 @@ class Session(object):
             if not r.status_code in self.errorCodes:
                 self.errorCodes.append(r.status_code)
                 xbmcgui.Dialog().notification('%s Error %s' % (settings.addon_name, r.status_code), msg, xbmcgui.NOTIFICATION_ERROR)
-        if r.content and settings.log_details == 3:
+        if r.content and settings.log_details == 4:
             # Only in Detail-Log because the JSon-Dump costs a lot CPU time
             try:
                 debug.log("response: %s" % json.dumps(r.json(), indent=4), xbmc.LOGSEVERE)

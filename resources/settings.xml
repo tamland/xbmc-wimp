@@ -8,7 +8,7 @@
     <setting label="30037" id="reset_user_cache" type="action" action="RunPlugin(plugin://plugin.audio.wimp/reload_user_cache)"/>
     <setting label="30004" id="debug" type="bool" default="false" />
     <setting label="30075" id="debug_server" type="text" default="localhost" visible="eq(-1,true)"/>
-    <setting label="30070" id="log_details" type="select" lvalues="30071|30072|30073|30074" default="0"/>
+    <setting label="30070" id="log_details" type="select" lvalues="30074|30071|30072|30073" default="1"/>
   </category>
   <category label="30010">
     <setting label="30036" id="view_mode_folders" type="enum" lvalues="30050|30051|30052|30053|30054" default="4" />

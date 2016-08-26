@@ -33,7 +33,7 @@ except:
 DEBUG_ENABLED = True
 DEBUG_SERVER = 'localhost'
 ADDON_NAME = 'DEBUG'
-LOG_DETAILS = 2
+LOG_DETAILS = 1
 try:
     # when initialization code is debugged, the settings are not available yet !
     from config import settings, CONST
@@ -51,11 +51,11 @@ except:
 def log(txt = '', level=xbmc.LOGDEBUG):
     ''' Log a text into the Kodi-Logfile '''
     try:
-        if LOG_DETAILS < 3:
-            if LOG_DETAILS == 1 and level == xbmc.LOGDEBUG:
+        if LOG_DETAILS > 0:
+            if LOG_DETAILS == 2 and level == xbmc.LOGDEBUG:
                 # More Logging
                 level = xbmc.LOGNOTICE
-            if LOG_DETAILS == 2 and (level == xbmc.LOGDEBUG or level == xbmc.LOGSEVERE):
+            if LOG_DETAILS == 3 and (level == xbmc.LOGDEBUG or level == xbmc.LOGSEVERE):
                 # Complex Logging
                 level = xbmc.LOGNOTICE
             if level != xbmc.LOGSEVERE:

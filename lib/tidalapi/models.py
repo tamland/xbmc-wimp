@@ -352,7 +352,8 @@ class AlbumItem(BaseItem):
         comment = self.getFtArtistsText()
         if comment:
             comments.append(comment)
-        comments.append('album_id=%s' % self.id)
+        if settings.log_details > 1:
+            comments.append('album_id=%s' % self.id)
         return comments
     
     def getListItem(self):
@@ -651,12 +652,13 @@ class TrackItem(PlaylistPosItem):
         txt = self.getFtArtistsText()
         if txt:
             comments.append(txt)
-        comments.append('track_id=%s' % self.id)
+        if settings.log_details > 1:
+            comments.append('track_id=%s' % self.id)
         if self._user_playlists:
             comments.append('User-Playlists: ' + ', '.join([item[1] for item in self._user_playlists]))
         if self.version:
             comments.append(self.version)
-        if settings.debug and settings.log_details == 2:
+        if settings.log_details == 3:
             # Show Peak and ReplayGain in Full Debug Mode
             if self.peak != 0.0:
                 comments.append('Peak:%0.3f' % self.peak)            
@@ -824,7 +826,8 @@ class VideoItem(PlaylistPosItem):
         comment = self.getFtArtistsText()
         if comment:
             comments.append(comment)
-        comments.append('video_id=%s' % self.id)
+        if settings.log_details > 1:
+            comments.append('video_id=%s' % self.id)
         return comments
 
     def getListItem(self):
@@ -938,7 +941,7 @@ class PromotionItem(BaseItem):
                 'title': self.subHeader,
                 'album': self.subHeader,
             }
-            if self.type == 'VIDEO':
+            if self.type == 'VIDEO' and settings.log_details > 1:
                 info.update({'plotoutline': 'video_id=%s' % self.artifactId})
             li.setInfo('video', info)
             width = 1920   # Assume maximum quality

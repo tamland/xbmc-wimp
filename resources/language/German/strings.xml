@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- Session Settings -->
+    <string id="30001">Benutzername</string>
+    <string id="30002">Passwort</string>
+    <string id="30003">Land für lokale Inhalte</string>
+    <string id="30004">Remote-Debugging aktivieren</string>
+    
+    <!-- Global Settings -->    
+    <string id="30005">Farbe für Ordner</string>
+    <string id="30006">Farbe für Favoriten</string>
+    <string id="30007">Favoriten in Listen markieren</string>
+    <string id="30008">Nachrichten für Favoriten-/Playlisten-Aktionen anzeigen</string>
+    <string id="30009">Fanart-Hintergrundbilder anzeigen</string>
+    <string id="30010">Allgemein</string>
+    <string id="30011">Session</string>
+    <string id="30012">Abgeschlossenes Abo</string>
+    <string id="30013">Farbe für gesperrte Streams</string>
+    <string id="30014">Max. Anzahl Einträge pro Seite</string>
+    <string id="30015">Limit für Top/Radio/Empfohlene Titel/Videos</string>
+    <string id="30017">Farbe für User-Playlisten</string>
+    <string id="30018">Bestätigung für Favoriten-/Playlisten-Aktionen</string>
+    <string id="30019">User-Playlisten zu Titel/Videos anzeigen</string>
+
+    <!-- Music Settings -->
+    <string id="30020">Musik-Qualität</string>
+    <string id="30021">FLAC (Lossless)</string>
+    <string id="30022">Hoch (320kbps)</string>
+    <string id="30023">Normal (96kbps)</string>
+    <string id="30024">MQA Studio Master</string>
+    <string id="30025">Musik</string>
+    <string id="30026">Langsame TIDAL-Server</string>
+    <string id="30027">Qualität für langsame Server</string>
+    <string id="30028">Premium (max 320kbs)</string>
+    <string id="30029">HiFi (Lossless)</string>
+
+    <string id="30030">Ansicht für Genres</string>
+    <string id="30031">Ansicht für Playlisten</string>
+    <string id="30032">Ansicht für Künstler</string>
+    <string id="30033">Ansicht für Alben</string>
+    <string id="30034">Ansicht für Titel</string>
+    <string id="30035">Album-Typ im Text anzeigen</string>
+    <string id="30036">Ansicht für Ordner</string>
+    <string id="30037">UserPlaylist-/Favoriten-Cache neu laden</string>
+
+    <!-- Video Settings -->
+    <string id="30040">Video-Qualität</string>
+    <string id="30041">Max. Bandbreite</string>
+    <string id="30042">Video (1080p)</string>
+    <string id="30043">Video (720p)</string>
+    <string id="30044">Video (540p)</string>
+    <string id="30045">Video (480p)</string>
+    <string id="30046">Video (360p)</string>
+    <string id="30047">Video (240p)</string>
+    <string id="30048">Ansicht für Videos</string>
+
+    <!-- View Modes -->
+    <string id="30050">Standard</string>
+    <string id="30051">Liste</string>
+    <string id="30052">Große Liste</string>
+    <string id="30053">Vorschaubild</string>
+    <string id="30054">Medieninformationen</string>
+
+    <!-- Extended Settings -->
+    <string id="30070">Detailliertes Loggen</string>
+    <string id="30071">Normal</string>
+    <string id="30072">Mehr Infos</string>
+    <string id="30073">Alles</string>
+    <string id="30074">Kein Logging</string>
+    <string id="30075">Remote Debug Server</string>
+    <string id="30076">Album-Cache verwenden (für korrektes Jahr in Titel-Listen)</string>
+    <string id="30077">Max. Anzahl paralleler HTTP-Requests</string>
+    <string id="30078">Export-/Import-Verzeichnis</string>
+
+    <!-- Program Text -->
+    <string id="30101">Künstler</string>
+    <string id="30102">Album</string>
+    <string id="30103">Playliste</string>
+    <string id="30104">Titel</string>
+    <string id="30105">Video</string>
+    <string id="30106">Künstler</string>
+    <string id="30107">Alben</string>
+    <string id="30108">Playlisten</string>
+    <string id="30109">Titel</string>
+    <string id="30110">Videos</string>
+    <string id="30111">Information</string>
+    <string id="30112">Fehler</string>
+    <string id="30113">Stream Gesperrt</string>
+    <string id="30114">Warnung</string>
+    <string id="30115">Achtung</string>
+    <string id="30116">Es wird nur mit Qualität HIGH abgespielt</string>
+    <string id="30117">Fehler beim Schreiben einer Datei</string>
+    <string id="30118">Album-Jahr</string>
+    <string id="30119">Album-Künstler</string>
+    <string id="30120">Filme</string>
+    <string id="30121">Serien</string>
+
+    <!-- Main Menu -->
+    <string id="30201">Meine Musiksammlung</string>
+    <string id="30202">Promotionen</string>
+    <string id="30203">Neuheiten</string>
+    <string id="30204">Genres</string>
+    <string id="30205">Stimmungen</string>
+    <string id="30206">Suchen</string>
+    <string id="30207">Abmelden</string>
+    <string id="30208">Anmelden</string>
+    <string id="30209">Anmeldedaten merken ?</string>  
+    <string id="30210">Anmeldefehler !</string>  
+    <string id="30211">TIDAL Rising</string>  
+    <string id="30212">TIDAL Discovery</string>  
+    <string id="30213">Erneut suchen</string>
+    <string id="30214">Nicht angemeldet - Demo-Modus aktiv !</string>
+    <string id="30215">Demo-Modus</string>
+
+    <!-- Context Menu Items -->
+    <string id="30219">Öffnen</string>
+    <string id="30220">Abspielen</string>
+    <string id="30221">Aus Favoriten entfernen</string>
+    <string id="30222">Zu Favoriten hinzufügen</string>
+    <string id="30223">Künstler anzeigen</string>
+    <string id="30224">Playliste löschen</string>
+    <string id="30225">Titel-Radio</string>
+    <string id="30226">Album anzeigen</string>
+    <string id="30227">Zur Playliste hinzufügen...</string>
+    <string id="30228">Aus Playliste entfernen</string>
+    <string id="30229">Addon Einstellungen</string>
+    <string id="30230">Extras ...</string>
+
+    <!-- User Menu -->
+    <string id="30231">Meine Playlisten</string>
+    <string id="30232">Favorisierte Playlisten</string>
+    <string id="30233">Favorisierte Künstler</string>
+    <string id="30234">Favorisierte Alben</string>
+    <string id="30235">Favorisierte Titel</string>
+    <string id="30236">Neue Playliste erstellen</string>
+    <string id="30237">Name der neuen Playliste</string>
+    <string id="30238">Beschreibung (optional)</string>
+    <string id="30239">Playliste nicht gefunden</string>
+    <string id="30240">Playliste löschen ?</string>
+    <string id="30241">Soll die Playliste "%s" wirklich gelöscht werden ?</string>
+    <string id="30242">Die Playliste "%s" enthält %s Elemente. Soll diese Playliste wirklich gelöscht werden ?</string>
+    <string id="30243">Playliste gelöscht</string>
+    <string id="30244">Fehler beim API-Aufruf</string>
+    <string id="30245">Playliste auswählen</string>
+    <string id="30246">Eintrag hinzugefügt</string>
+    <string id="30247">Eintrag aus Playliste entfernen ?</string>
+    <string id="30248">Soll Titel Nr. %s aus der Playliste entfernt werden ?</string>
+    <string id="30249">Eintrag entfernt</string>
+    <string id="30250">Favorit hinzufügen ?</string>
+    <string id="30251">Favorit entfernen ?</string>
+    <string id="30252">Unbekannter Favoriten-Typ</string>
+    <string id="30253">{kind} "{name}" zu Favoriten hinzufügen ?</string>
+    <string id="30254">{kind} "{name}" aus Favoriten entfernen ?</string>
+    <string id="30255">hinzugefügt</string>
+    <string id="30256">entfernt</string>
+    <string id="30257">{kind} mit ID {id} nicht gefunden</string>
+    <string id="30258">Playliste anzeigen</string>
+    <string id="30259">Allgemeine Suche</string>
+    <string id="30260">In andere Playliste verschieben</string>
+    <string id="30261">Eintrag verschoben</string>
+    <string id="30262">Favorisierte Videos</string>
+    <string id="30263">Als Default-%s-Playliste setzen</string>
+    <string id="30264">Default-%s-Playliste zurücksetzen</string>
+    <string id="30265">Eintrag zur Playliste "%s" hinzufügen ?</string>
+    <string id="30266">Eintrag aus Playliste "%s" entfernen ?</string>
+    <string id="30267">Nur Audio-Tracks</string>
+    <string id="30268">Nur Videos</string>
+    <string id="30269">Titel-Empfehlungen</string>
+    <string id="30270">Video-Empfehlungen</string>
+    <string id="30271">Playliste erzeugt</string>
+    <string id="30272">Benutzer-/Abo-Infos</string>
+    <string id="30273">{what} exportieren</string>
+    <string id="30274">{what} importieren</string>
+    <string id="30275">{n} exportiert</string>
+    <string id="30276">{n} importiert</string>    
+    <string id="30277">Nächste Seite ({pos1}-{pos2})</string>
+    <string id="30278">%s Alben nicht geladen</string>
+    <string id="30279">%s-Favoriten Löschen</string>
+    <string id="30280">Cache-Aufbau abgeschlossen</string>
+
+    <!-- Artist Page -->
+    <string id="30301">Künstler-Radio</string>
+    <string id="30302">Playlisten vom Künstler</string>
+    <string id="30303">Ähnliche Künstler</string>
+    <string id="30304">Aus Künstler-Favoriten entfernen</string>
+    <string id="30305">Zu Künstler-Favoriten hinzufügen</string>
+    <string id="30306">Zusammenfassung</string>
+    <string id="30307">Biografie</string>
+    <string id="30308">Beliebte Titel</string>
+
+</strings>

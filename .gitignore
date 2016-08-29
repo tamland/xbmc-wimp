@@ -39,3 +39,10 @@ output/*/index.html
 
 # Sphinx
 docs/_build
+
+# Mac-Stuff
+.DS_Store
+
+# Eclipse-Settings
+.settings
+*.prefs
